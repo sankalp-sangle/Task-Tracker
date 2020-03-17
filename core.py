@@ -77,7 +77,7 @@ class TaskManager:
 
 class Parser:
 
-    VALID_COMMANDS = ['show', 'help', 'add', 'exit', 'delete']
+    VALID_COMMANDS = ['show day', 'show week', 'show all', 'help', 'add', 'exit', 'delete']
 
     def __init__(self, taskManager = None):
         if taskManager is None:
@@ -92,7 +92,11 @@ class Parser:
             print("No Command Found")
             
         else:
-            if command == 'show':
+            if command == 'show day':
+                self.processShowTime(0)
+            elif command == 'show week':
+                self.processShowTime(6)
+            elif command == 'show all':
                 self.processShow()
             elif command == 'help':
                 self.processHelp()
@@ -107,6 +111,10 @@ class Parser:
     def processShow(self):
         self.taskManager.show_all_tasks()
         
+    def processShowTime(self, days):
+        for task in self.taskManager.tasks:
+            if task.dueDate < datetime.datetime.now() + datetime.timedelta(days = days):
+                task.print_info()
 
     def processHelp(self):
         print("Hello!")
