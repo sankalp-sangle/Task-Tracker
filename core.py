@@ -21,7 +21,7 @@ class Task:
 
 class TaskManager:
 
-    DEFAULT_FILE = "./data.json"
+    DEFAULT_FILE = "data.json"
 
     def __init__(self, tasks = None, dataFile = None):
         if tasks is None:
