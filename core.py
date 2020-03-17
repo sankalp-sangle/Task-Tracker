@@ -78,8 +78,10 @@ class Parser:
     def __init__(self, taskManager = None):
         if taskManager is None:
             taskManager = TaskManager()
+            
 
         self.taskManager = taskManager
+        self.taskManager.show_all_tasks()
 
     def processCommand(self, command):
         if command not in Parser.VALID_COMMANDS:
