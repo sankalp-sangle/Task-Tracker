@@ -1,23 +1,27 @@
 import json
+import datetime
 
 class Task:
     DEFAULT_DESCRIPTION = "No description provided"
-    DEFAULT_DATE = "17/03/2020"
 
-    def __init__(self, taskID, description, date):
+    def __init__(self, taskID = None, description = None, dateAdded = None, dueDate = None):
         if taskID is None:
             raise NotImplementedError
         if description is None:
             description = Task.DEFAULT_DESCRIPTION
-        if date is None:
-            date = Task.DEFAULT_DATE
+        if dateAdded is None:
+            dateAdded = datetime.datetime.now()
+        if dueDate is None:
+            dueDate = datetime.datetime.now() + datetime.timedelta(days = 2)
 
         self.taskID = taskID
         self.description = description
-        self.date = date
+        self.dateAdded = dateAdded
+        self.dueDate = dueDate
+        
 
     def print_info(self):
-        print("Task ID: {}, Task Description: {}, Task Date: {}".format(self.taskID, self.description, self.date))
+        print("Task ID: {}, Task Description: {}, Task Date Added: {}, Task Due Date: {}".format(self.taskID, self.description, self.dateAdded, self.dueDate))
 
 class TaskManager:
 
@@ -39,14 +43,14 @@ class TaskManager:
         task_list = json.loads(file.read())
 
         for task in task_list:
-            self.tasks.append(Task(taskID = task['taskID'], description = task['description'], date = task['date']))
+            self.tasks.append(Task(taskID = task['taskID'], description = task['description'], dateAdded = datetime.datetime.strptime(task['dateAdded'], '%Y-%m-%d %H:%M:%S.%f')))
     
     def dump_tasks(self):
 
         file = open(self.dataFile, "w")
         assert file is not None
 
-        file.write(json.dumps([x.__dict__ for x in self.tasks]))
+        file.write(json.dumps([x.__dict__ for x in self.tasks], default = myconverter))
         
 
     def show_all_tasks(self):
@@ -117,10 +121,19 @@ class Parser:
         print("Enter task description:")
         description = input()
 
-        print("Date:")
-        date = input()
+        dueDate = None
 
-        self.taskManager.tasks.append(Task(taskID = newTaskId, description = description, date = date))
+        while True:
+            print("Enter due date in YYYY-MM-DD OR just press enter for a due date 2 days from now:")
+            date = input()
+            if self.checkValidDate(date):
+                dueDate = datetime.datetime.strptime(date, '%Y-%m-%d')
+                break
+            elif date == "":
+                break
+
+        task = Task(taskID = newTaskId, description = description, dueDate = dueDate)
+        self.taskManager.tasks.append(task)
 
     def processDelete(self):
         print("Enter task ID you wish to delete:")
@@ -141,3 +154,12 @@ class Parser:
     def processExit(self):
         self.taskManager.dump_tasks()
         exit()
+
+    def checkValidDate(self, date):
+        if len(date) == 10 and len(date.split('-')) == 3 and date[4] == '-' and date[7] == '-':
+            return True
+        return False
+
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
