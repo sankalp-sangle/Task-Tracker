@@ -77,7 +77,7 @@ class TaskManager:
 
 class Parser:
 
-    VALID_COMMANDS = ['show day', 'show week', 'show all', 'help', 'add', 'exit', 'delete']
+    VALID_COMMANDS = ['show day', 'show week', 'show all', 'help', 'add', 'update', 'exit', 'delete']
 
     def __init__(self, taskManager = None):
         if taskManager is None:
@@ -103,6 +103,8 @@ class Parser:
                 self.processAdd()
             elif command == 'exit':
                 self.processExit()
+            elif command == 'update':
+                self.processUpdate()
             elif command == 'delete':
                 self.processDelete()
             
@@ -167,6 +169,43 @@ class Parser:
                 if self.taskManager.tasks[i].taskID == ID:
                     self.taskManager.tasks.pop(i)
                     return
+
+    def processUpdate(self):
+        while True:
+
+            validInput = True
+            print("Enter task ID you wish to delete:")
+            try:
+                ID = int(input())
+            except ValueError:
+                print("That's not a task ID!")
+                validInput = False
+            finally:
+                if validInput:
+                    break
+        
+        existingIDs = [x.taskID for x in self.taskManager.tasks]
+
+        if ID not in existingIDs:
+            print("No such ID exists")
+            return
+        else:
+            for i in range(len(self.taskManager.tasks)):
+                if self.taskManager.tasks[i].taskID == ID:
+                    print("Enter updated description:")
+                    description = input()
+                    
+                    dueDate = None
+                    while True:
+                        print("Enter updated due date in YYYY-MM-DD OR just press enter for a due date 2 days from now:")
+                        date = input()
+                        if self.checkValidDate(date):
+                            dueDate = datetime.datetime.strptime(date, '%Y-%m-%d')
+                            break
+                        elif date == "":
+                            break
+                    self.taskManager.tasks[i].description = description
+                    self.taskManager.tasks[i].dueDate = dueDate
 
     def processExit(self):
         self.taskManager.dump_tasks()
