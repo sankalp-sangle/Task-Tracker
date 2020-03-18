@@ -85,7 +85,6 @@ class Parser:
             
 
         self.taskManager = taskManager
-        self.taskManager.show_all_tasks()
 
     def processCommand(self, command):
         if command not in Parser.VALID_COMMANDS:
