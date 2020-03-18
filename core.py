@@ -144,10 +144,20 @@ class Parser:
         self.taskManager.tasks.append(task)
 
     def processDelete(self):
-        print("Enter task ID you wish to delete:")
         
-        ID = int(input())
+        while True:
 
+            validInput = True
+            print("Enter task ID you wish to delete:")
+            try:
+                ID = int(input())
+            except ValueError:
+                print("That's not a task ID!")
+                validInput = False
+            finally:
+                if validInput:
+                    break
+                
         existingIDs = [x.taskID for x in self.taskManager.tasks]
 
         if ID not in existingIDs:
