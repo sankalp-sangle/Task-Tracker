@@ -21,7 +21,7 @@ class Task:
         
 
     def print_info(self):
-        print("Task ID: {}, Task Description: {}, Task Date Added: {}, Task Due Date: {}".format(self.taskID, self.description, self.dateAdded, self.dueDate))
+        print("{} {} {} {}".format(str(self.taskID).ljust(35), self.description.ljust(35), str(self.dateAdded).ljust(35), str(self.dueDate).ljust(35)))
 
 class TaskManager:
 
@@ -43,7 +43,7 @@ class TaskManager:
         task_list = json.loads(file.read())
 
         for task in task_list:
-            self.tasks.append(Task(taskID = task['taskID'], description = task['description'], dateAdded = datetime.datetime.strptime(task['dateAdded'], '%Y-%m-%d %H:%M:%S.%f')))
+            self.tasks.append(Task(taskID = task['taskID'], description = task['description'], dateAdded = datetime.datetime.strptime(task['dateAdded'], '%Y-%m-%d %H:%M:%S.%f'), dueDate=datetime.datetime.strptime(task['dueDate'], '%Y-%m-%d %H:%M:%S.%f')))
     
     def dump_tasks(self):
 
@@ -54,11 +54,9 @@ class TaskManager:
         
 
     def show_all_tasks(self):
-        if len(self.tasks) is 0:
-            print("No tasks existing")
-        else:
-            for task in self.tasks:
-                task.print_info()
+        print("{} {} {} {}".format('Task ID'.ljust(35), 'Task Description'.ljust(35), 'Date Added'.ljust(35), 'Due Date'.ljust(35)))
+        for task in self.tasks:
+            task.print_info()
 
     #get the lowest available ID
     def get_new_ID(self):
@@ -113,6 +111,7 @@ class Parser:
         self.taskManager.show_all_tasks()
         
     def processShowTime(self, days):
+        print("{} {} {} {}".format('Task ID'.ljust(35), 'Task Description'.ljust(35), 'Date Added'.ljust(35), 'Due Date'.ljust(35)))
         for task in self.taskManager.tasks:
             if task.dueDate < datetime.datetime.now() + datetime.timedelta(days = days):
                 task.print_info()
@@ -136,7 +135,7 @@ class Parser:
             print("Enter due date in YYYY-MM-DD OR just press enter for a due date 2 days from now:")
             date = input()
             if self.checkValidDate(date):
-                dueDate = datetime.datetime.strptime(date, '%Y-%m-%d')
+                dueDate = datetime.datetime.strptime(date + " 00:00:00.000001", '%Y-%m-%d %H:%M:%S.%f')
                 break
             elif date == "":
                 break
@@ -174,7 +173,7 @@ class Parser:
         while True:
 
             validInput = True
-            print("Enter task ID you wish to delete:")
+            print("Enter task ID you wish to update:")
             try:
                 ID = int(input())
             except ValueError:
@@ -200,7 +199,7 @@ class Parser:
                         print("Enter updated due date in YYYY-MM-DD OR just press enter for a due date 2 days from now:")
                         date = input()
                         if self.checkValidDate(date):
-                            dueDate = datetime.datetime.strptime(date, '%Y-%m-%d')
+                            dueDate = datetime.datetime.strptime(date + "00:00:00.000001", '%Y-%m-%d %H:%M:%S.%f')
                             break
                         elif date == "":
                             break
