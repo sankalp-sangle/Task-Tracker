@@ -13,12 +13,12 @@ def main():
     printWelcomeMessage()
 
     while(True):
-        print(">",end="")
+        print("$ ",end="")
         command = input()
         parser.processCommand(command)
 
 def printWelcomeMessage():
-    welcome = '''Hi! To see a list of available commands, type help.
+    welcome = '''Hello from task-tracker! To see a list of available commands, type help.
     Type exit to quit.'''
 
     print(welcome)
