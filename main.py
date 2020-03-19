@@ -15,6 +15,8 @@ def main():
     while(True):
         print("$ ",end="")
         command = input()
+        if command == "":
+            continue
         parser.processCommand(command)
 
 def printWelcomeMessage():
