@@ -1,8 +1,8 @@
+#!/usr/local/bin/python3
 import json
 
-from core import Task
-from core import TaskManager
-from core import Parser
+from core import Parser, Task, TaskManager
+
 
 def main():
 
@@ -20,10 +20,10 @@ def main():
         parser.processCommand(command)
 
 def printWelcomeMessage():
-    welcome = '''Hello from task-tracker! To see a list of available commands, type help.
+    welcomeMessage = '''Hello from task-tracker! To see a list of available commands, type help.
     Type exit to quit.'''
 
-    print(welcome)
+    print(welcomeMessage)
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
-import json
 import datetime
+import json
+
 
 class Task:
     DEFAULT_DESCRIPTION = "No description provided"
@@ -90,9 +91,9 @@ class Parser:
             
         else:
             if command == 'show day':
-                self.processShowTime(0)
+                self.processShowRange(0)
             elif command == 'show week':
-                self.processShowTime(6)
+                self.processShowRange(6)
             elif command == 'show all':
                 self.processShow()
             elif command == 'help':
@@ -110,7 +111,7 @@ class Parser:
     def processShow(self):
         self.taskManager.show_all_tasks()
         
-    def processShowTime(self, days):
+    def processShowRange(self, days):
         print("{} {} {} {}".format('Task ID'.ljust(35), 'Task Description'.ljust(35), 'Date Added'.ljust(35), 'Due Date'.ljust(35)))
         for task in self.taskManager.tasks:
             if task.dueDate < datetime.datetime.now() + datetime.timedelta(days = days):
@@ -199,7 +200,7 @@ class Parser:
                         print("Enter updated due date in YYYY-MM-DD OR just press enter for a due date 2 days from now:")
                         date = input()
                         if self.checkValidDate(date):
-                            dueDate = datetime.datetime.strptime(date + "00:00:00.000001", '%Y-%m-%d %H:%M:%S.%f')
+                            dueDate = datetime.datetime.strptime(date + " 00:00:00.000001", '%Y-%m-%d %H:%M:%S.%f')
                             break
                         elif date == "":
                             break
@@ -215,6 +216,6 @@ class Parser:
             return True
         return False
 
-def myconverter(o):
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
+def myconverter(obj):
+    if isinstance(obj, datetime.datetime):
+        return obj.__str__()
